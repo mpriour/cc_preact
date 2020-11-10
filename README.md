@@ -1,70 +1,65 @@
-# Calcite Components Examples
+# Preact
 
-Working example applications utilizing [calcite-components](https://github.com/Esri/calcite-components). Each folder within this repository is its own mini application demonstrating integration of calcite components with other technologies and tooling.
+This project was bootstrapped with [Preact CLI](https://github.com/preactjs/preact-cli).
 
-Most frameworks provide a CLI tool to quickly start up a repo. If available, these tools are used to create the examples to ensure they are colloquial to the framework in question. After a starter project is scaffolded up, calcite-components are installed and some general steps are taken:
-
-1. Include calcite components' loader and define the custom elements
-2. Pull in calcite-components' global CSS file (provides theming variables, etc)
-3. Ensure calcite-components' assets get copied into the project (allows the `calcite-icon` component to work)
-
-This repository will change over time as new best-practices are established and framework integrations are improved.
-
-## Angular
-
-The [Angular example](./angular/) was built using the `@angular/cli` package:
+In the project directory, you can run:
 
 ```
-npm install -g @angular/cli
-ng new [NAME]
+npm install
+npm run dev
 ```
 
-## Ember
+This will install dependencies and then start up a development server on [localhost:8080](http://localhost:8080).
 
-The [ember app](./ember/) used the `ember-cli` package to get started:
+## Calcite Components with Preact
 
-```
-npm install -g ember-cli
-ember new [NAME]
-```
-
-## React
-
-The [example react app](./react/) was created using the `create-react-app` utility:
+To install calcite components, first run:
 
 ```
-npx create-react-app [NAME]
+npm install --save @esri/calcite-components
 ```
 
-## Preact
+After calcite-components is installed, import the loader in your `index.js` file:
 
-The [example preact app](./preact-typescript/) was created using the `preact create` utility:
+```js
+import { applyPolyfills, defineCustomElements } from '@esri/calcite-components/dist/loader';
 
-```
-npm install -g preact-cli
-preact create typescript [NAME]
-```
-
-This example also uses TypeScript, and provides additional instructions for getting calcite components to work inside a TypeScript + Preact environment.
-
-
-## Vue
-
-The [Vue.js example](./vue/) was built using the `cli-service-global` package:
-
-```
-npm install -g @vue/cli
-vue create [NAME]
+// Apply polyfills and then define the custom elements
+// polyfills are not needed if you don't support IE11 or Edge
+applyPolyfills().then(() => {
+  defineCustomElements(window);
+});
 ```
 
-## Rollup
+## Adding the CSS
 
-The [Rollup example](./rollup/) was generated with [rollup-starter-app](https://github.com/rollup/rollup-starter-app):
+The global calcite components CSS can be imported into your `index.js` file as well:
+
+```js
+import '@esri/calcite-components/dist/calcite/calcite.css';
+```
+
+## Adding the icons
+
+The icon assets must be copied over to the assets folder manually. A `copy` script has been created to make this process easier:
 
 ```
-npx degit "rollup/rollup-starter-app" [NAME]
+npm run copy
 ```
 
-## Webpack
+This will copy the JSON assets required by the icon component to your project's `assets` directory.
 
-The [Webpack example](./webpack/) was built from scratch using Webpack 4.x.
+
+## Using TypeScript
+
+When you use calcite-components tags in your `tsx` files, you'll get an error when you try to use a custom element tag. To make TypeScript aware of calcite-components (and their prop types) you must also add a file to your `tsconfig.json`:
+
+```
+"files": [
+  "node_modules/@esri/calcite-components/dist/types/preact.d.ts"
+],
+```
+
+## Events
+
+To add event handlers for custom events coming from calcite components, you must slightly alter the capitalization of the event name. For example, in React, you'd use `onCalciteDropdownClose`, but in Preact, you must change this to `oncalciteDropdownClose`. Preact will only fire your handler if you use this casing. You can see an example event handler in `src/routes/home/index.tsx`.
